@@ -1,0 +1,38 @@
+package ru.alemakave.xuitelegrambot.service;
+
+import org.springframework.http.HttpMethod;
+
+/**
+ * Подробности API доступны по <a href="https://github.com/MHSanaei/3x-ui?tab=readme-ov-file#api-routes">ссылке</a>
+  */
+public interface ThreeXWeb {
+    /**
+     * <p>
+     *     <b><i>Метод</i></b>: {@link HttpMethod#GET}
+     * </p>
+     * <p>
+     *     <b><i>Путь</i></b>: {@code /panel/api/inbounds/createbackup}
+     * </p>
+     * <p>
+     *     <b><i>Описание</i></b>: Этот эндпоинт запускает создание резервной копии системы и инициирует доставку файла
+     *     резервной копии назначенным администраторам через настроенного бота Telegram. Сервер проверяет статус
+     *     активации бота Telegram в настройках системы и проверяет наличие идентификаторов администратора, указанных
+     *     в настройках, перед отправкой резервной копии.
+     * </p>
+     */
+    void createBackup();
+
+    /**
+     * <p>
+     *     <b><i>Метод</i></b>: {@link HttpMethod#POST}
+     * </p>
+     * <p>
+     *     <b><i>Путь</i></b>: {@code /panel/api/inbounds/resetAllTraffics}
+     * </p>
+     * <p>
+     *     <b><i>Описание</i></b>: Этот эндпоинт используется для сброса статистики трафика для всех входящих
+     *     подключений в системе.
+     * </p>
+     */
+    void resetAllTraffics();
+}
