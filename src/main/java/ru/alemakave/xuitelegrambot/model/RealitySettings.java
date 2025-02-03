@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
 @EqualsAndHashCode
@@ -20,5 +19,5 @@ public class RealitySettings {
     private String maxClient;
     private int maxTimediff;
     private List<String> shortIds;
-    private Map<String, String> settings;
+    private RealityConnectionSettings settings;
 }

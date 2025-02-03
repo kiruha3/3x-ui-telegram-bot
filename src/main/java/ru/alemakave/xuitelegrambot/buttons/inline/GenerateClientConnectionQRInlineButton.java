@@ -5,9 +5,9 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.message.MaybeInaccessibleMessage;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.DeleteMessage;
-import com.pengrad.telegrambot.request.EditMessageCaption;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import ru.alemakave.qr.ImageType;
@@ -67,8 +67,8 @@ public class GenerateClientConnectionQRInlineButton extends TGInlineButton {
                 "@" + connection.getListen() + ":" + connection.getPort() +
                 "?type=" + connection.getStreamSettings().getNetwork() +
                 "&security=" + connection.getStreamSettings().getSecurity() +
-                "&pbk=" + connection.getStreamSettings().getRealitySettings().getSettings().get("publicKey") +
-                "&fp=" + connection.getStreamSettings().getRealitySettings().getSettings().get("fingerprint") +
+                "&pbk=" + connection.getStreamSettings().getRealitySettings().getSettings().getPublicKey() +
+                "&fp=" + connection.getStreamSettings().getRealitySettings().getSettings().getFingerprint() +
                 "&sni=" + connection.getStreamSettings().getRealitySettings().getDest().split(":")[0] +
                 "&sid=" + connection.getStreamSettings().getRealitySettings().getShortIds().get(0) +
                 "&spx=" + URLEncoder.encode("/", StandardCharsets.UTF_8) +
@@ -79,6 +79,15 @@ public class GenerateClientConnectionQRInlineButton extends TGInlineButton {
             SendPhoto photo = new SendPhoto(chatId, ImageUtils.toByteArray(QRGenerator.generateToBufferedImage(msg, 300, 300), ImageType.PNG));
             photo.parseMode(ParseMode.MarkdownV2);
             photo.caption("```" + msg + "```");
+
+            GetConnectionInlineButton backButton = new GetConnectionInlineButton(telegramBot);
+            backButton.setButtonText("Назад");
+            backButton.addCallbackArg(connection.getId());
+
+            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+            inlineKeyboardMarkup.addRow(backButton.getButton());
+            photo.replyMarkup(new InlineKeyboardMarkup(backButton.getButton()));
+
             telegramBot.execute(photo);
 
             DeleteMessage deleteMessage = new DeleteMessage(chatId, message.messageId());

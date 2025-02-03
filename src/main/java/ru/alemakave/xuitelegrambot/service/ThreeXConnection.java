@@ -2,6 +2,7 @@ package ru.alemakave.xuitelegrambot.service;
 
 import org.springframework.http.HttpMethod;
 import ru.alemakave.xuitelegrambot.model.Connection;
+import ru.alemakave.xuitelegrambot.model.messages.Message;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public interface ThreeXConnection {
      *
      * @param inboundId Идентификатор входящего подключения, для которого запрашивается информация.
      */
-    Connection get(int inboundId);
+    Connection get(long inboundId);
 
     /**
      * <p>
@@ -48,7 +49,7 @@ public interface ThreeXConnection {
      *     <b><i>Описание</i></b>: Этот эндпоинт используется для добавления новой входящей конфигурации.
      * </p>
      */
-    void add();
+    Connection add(String remark);
 
     /**
      * <p>
@@ -64,7 +65,7 @@ public interface ThreeXConnection {
      *
      * @param inboundId Идентификатор входящего подключения, подлежащего удалению.
      */
-    void delete(int inboundId);
+    Message<?> delete(long inboundId);
 
     /**
      * <p>
@@ -80,18 +81,5 @@ public interface ThreeXConnection {
      *
      * @param inboundId Идентификатор входящего подключения, которое необходимо обновить.
      */
-    void update(int inboundId, Connection connection);
-
-    /**
-     * <p>
-     *     <b><i>Метод</i></b>: {@link HttpMethod#POST}
-     * </p>
-     * <p>
-     *     <b><i>Путь</i></b>: {@code /panel/api/inbounds/onlines}
-     * </p>
-     * <p>
-     *     <b><i>Описание</i></b>: Возвращает электронную почту клиентов, которые в данный момент онлайн.
-     * </p>
-     */
-    void onlines();
+    void update(long inboundId, Connection connection);
 }

@@ -1,6 +1,7 @@
 package ru.alemakave.xuitelegrambot.service;
 
 import org.springframework.http.HttpMethod;
+import ru.alemakave.xuitelegrambot.model.Client;
 
 public interface ThreeXClient {
     /**
@@ -81,7 +82,7 @@ public interface ThreeXClient {
      *     подключению, по его идентификатору в теле.
      * </p>
      */
-    void addClient();
+    Client addClient(long inboundId);
 
     /**
      * <p>
@@ -99,7 +100,7 @@ public interface ThreeXClient {
      * @param inboundId Идентификатор входящего подключения, из которого будет удален клиент.
      * @param clientId Уникальный идентификатор (UUID) клиента, подлежащего удалению.
      */
-    void deleteClientByClientId(int inboundId, String clientId);
+    void deleteClientByClientId(long inboundId, String clientId);
 
     /**
      * <p>
@@ -131,7 +132,7 @@ public interface ThreeXClient {
      * @param inboundId Идентификатор входящего подключения, к которому принадлежит клиент.
      * @param email Адрес электронной почты клиента, у которого сбрасывается статистика трафика.
      */
-    void resetClientTraffic(int inboundId, String email);
+    void resetClientTraffic(long inboundId, String email);
 
     /**
      * <p>
@@ -147,7 +148,7 @@ public interface ThreeXClient {
      *
      * @param inboundId Идентификатор входящего подключения, для которого сбрасывается клиентский трафик.
      */
-    void resetAllClientTraffics(int inboundId);
+    void resetAllClientTraffics(long inboundId);
 
     /**
      * <p>
@@ -165,6 +166,6 @@ public interface ThreeXClient {
      * @param inboundId Идентификатор входящего подключения, из которого будут удалены исчерпанные клиенты. Если
      * {@code inboundId=-1}, исчерпанные клиенты будут удалены из всех входящих подключений.
      */
-    void delDepletedClients(int inboundId);
+    void delDepletedClients(long inboundId);
 
 }

@@ -6,12 +6,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import ru.alemakave.xuitelegrambot.client.CookedWebClient;
+import ru.alemakave.xuitelegrambot.configuration.WebClientConfiguration;
+import ru.alemakave.xuitelegrambot.exception.InvalidCountryException;
+import ru.alemakave.xuitelegrambot.utils.WebUtils;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static ru.alemakave.xuitelegrambot.utils.WebUtils.connectProxyToWebClientBuilder;
 
 @Slf4j
 @Service
@@ -19,10 +26,16 @@ public class ThreeXAuthImpl implements ThreeXAuth {
     @Autowired
     private CookedWebClient webClient;
     @Autowired
+    private WebClientConfiguration webClientConfiguration;
+    @Autowired
     private BodyInserters.FormInserter<String> authBody;
 
     @Override
     public void login() {
+        if (isAuthorized()) {
+            return;
+        }
+
         ResponseEntity<String> response = webClient
                 .post("/login")
                 .body(authBody)
@@ -62,6 +75,12 @@ public class ThreeXAuthImpl implements ThreeXAuth {
 
     @Override
     public boolean isAuthorized() {
+        WebClient.Builder webClientBuilder = WebClient.builder();
+        connectProxyToWebClientBuilder(webClientBuilder, webClientConfiguration.getProxyAddress(), webClientConfiguration.getProxyPort());
+        if (WebUtils.isInvalidCountry(webClientBuilder)) {
+            throw new InvalidCountryException();
+        }
+
         if (webClient.getCookies().get("3x-ui") == null) {
             return false;
         }
@@ -72,7 +91,11 @@ public class ThreeXAuthImpl implements ThreeXAuth {
         }
 
         if (response.getStatusCode().is3xxRedirection()) {
-            return response.getHeaders().get(HttpHeaders.LOCATION).get(0).equals("/" + System.getenv("threex.panel.path") + "/panel/");
+            if (!response.getHeaders().containsKey(HttpHeaders.LOCATION)) {
+                return false;
+            }
+
+            return Objects.requireNonNull(response.getHeaders().get(HttpHeaders.LOCATION)).get(0).equals("/" + webClientConfiguration.getPanelPath() + "/panel/");
         }
 
         return false;

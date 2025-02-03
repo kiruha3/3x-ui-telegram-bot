@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.1'
@@ -5,7 +7,7 @@ plugins {
 }
 
 group = 'ru.alemakave'
-version = '0.0.1-ALPHA'
+version = '0.0.2-ALPHA'
 
 java {
 	toolchain {
@@ -39,4 +41,10 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.register('buildSnapshot') {
+	SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss")
+	version = version.toString().split("-")[0] + "-snapshot+" + format.format(new Date())
+	dependsOn("build")
 }
