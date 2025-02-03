@@ -7,7 +7,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode
 @ToString
-public class ConnectionGetUpdateDTO {
+public class ConnectionDTO {
     private long id;
     private long up;
     private long down;

@@ -39,19 +39,18 @@ telegram:
 | `GET`  | `"/getClientTraffics/:email"`      | Получить трафик клиента по его email                                                            |  :white_square_button:  |
 | `GET`  | `"/getClientTrafficsById/:id"`     | Получить трафик клиентов по id                                                                  |  :white_square_button:  |
 | `GET`  | `"/createbackup"`                  | Отправить бекап админам в телеграм бот                                                          |  :white_square_button:  |
-| `POST` | `"/add"`                           | Добавить подключение                                                                            |  :white_square_button:  |
-| `POST` | `"/del/:id"`                       | Удалить подключение по его id                                                                   |  :white_square_button:  |
+| `POST` | `"/add"`                           | Добавить подключение                                                                            |   :white_check_mark:    |
+| `POST` | `"/del/:id"`                       | Удалить подключение по его id                                                                   |   :white_check_mark:    |
 | `POST` | `"/update/:id"`                    | Обновить подключение по его id                                                                  |   :white_check_mark:    |
 | `POST` | `"/clientIps/:email"`              | Получить IP адреса клиентов по его email                                                        |  :white_square_button:  |
 | `POST` | `"/clearClientIps/:email"`         | Отчистить IP адреса клиентов по его email                                                       |  :white_square_button:  |
-| `POST` | `"/addClient"`                     | Добавить клиента в подключение                                                                  |  :white_square_button:  |
+| `POST` | `"/addClient"`                     | Добавить клиента в подключение                                                                  |   :white_check_mark:    |
 | `POST` | `"/:id/delClient/:clientId"`       | Удалить клиента по его clientId\* в подключении по id                                           |  :white_square_button:  |
 | `POST` | `"/updateClient/:clientId"`        | Обновить клиента по его clientId\*                                                              |  :white_square_button:  |
 | `POST` | `"/:id/resetClientTraffic/:email"` | Сбросить трафик у клиента                                                                       |  :white_square_button:  |
 | `POST` | `"/resetAllTraffics"`              | Сбросить трафик у всех подключений                                                              |  :white_square_button:  |
 | `POST` | `"/resetAllClientTraffics/:id"`    | Сбросить трафик у всех клиентов в подключении по его id                                         |  :white_square_button:  |
 | `POST` | `"/delDepletedClients/:id"`        | Удалить всех клиентов в подключении id (-1 для всех подключений) с истекшем сроком или трафиком |  :white_square_button:  |
-| `POST` | `"/onlines"`                       | Получить список пользователей онлайн ( список email'ов )                                        | :ballot_box_with_check: |
 
 \* - Поле `clientId` должно быть заполнено следующим образом:
 

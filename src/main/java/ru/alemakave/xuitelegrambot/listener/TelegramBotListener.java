@@ -4,9 +4,11 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import com.pengrad.telegrambot.request.SendMessage;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,13 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import ru.alemakave.xuitelegrambot.annotations.TGInlineButtonAnnotation;
+import ru.alemakave.xuitelegrambot.buttons.inline.ListConnectionsInlineButton;
 import ru.alemakave.xuitelegrambot.buttons.inline.TGInlineButton;
+import ru.alemakave.xuitelegrambot.client.TelegramClient;
 import ru.alemakave.xuitelegrambot.commands.telegram.TGCommand;
 import ru.alemakave.xuitelegrambot.annotations.TGCommandAnnotation;
 import ru.alemakave.xuitelegrambot.model.Connection;
+import ru.alemakave.xuitelegrambot.service.ThreeXClient;
 import ru.alemakave.xuitelegrambot.service.ThreeXConnection;
 
 import java.lang.reflect.Constructor;
@@ -35,7 +40,10 @@ public class TelegramBotListener implements UpdatesListener {
     @Autowired
     private ThreeXConnection threeXConnection;
     @Autowired
-    private List<Long> adminChatIds;
+    private ThreeXClient threeXClient;
+    @Getter
+    @Autowired
+    private Map<Long, TelegramClient> telegramClients;
 
     private final Map<String, TGCommand> commands = new HashMap<>();
     private final Map<String, TGInlineButton> buttons = new HashMap<>();
@@ -57,12 +65,28 @@ public class TelegramBotListener implements UpdatesListener {
         String receivedMessage = update.message().text();
 
         if (receivedMessage != null) {
+            if (telegramClients.containsKey(chatId)
+                    && telegramClients.get(chatId).getRole() == TelegramClient.TelegramClientRole.ADMIN
+                    && telegramClients.get(chatId).getMode() == TelegramClient.TelegramClientMode.ENTER_CONNECTION_NAME) {
+                telegramClients.get(chatId).setMode(TelegramClient.TelegramClientMode.NONE);
+                Connection newConnection = threeXConnection.add(receivedMessage);
+                threeXClient.addClient(newConnection.getId());
+                threeXClient.addClient(newConnection.getId());
+
+                SendMessage sendMessage = new SendMessage(chatId, "Подключение создано");
+                InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup(new ListConnectionsInlineButton(telegramBot).getButton());
+                sendMessage.replyMarkup(keyboardMarkup);
+                telegramBot.execute(sendMessage);
+
+                return;
+            }
+
             if (receivedMessage.equals("531254")) {
                 Connection connection = threeXConnection.get(1);
                 connection.getSettings().getClients().get(0).setTgId("Admin:" + chatId);
                 threeXConnection.update(1, connection);
 
-                adminChatIds.add(chatId);
+                telegramClients.put(chatId, new TelegramClient(chatId, TelegramClient.TelegramClientRole.ADMIN));
 
                 SendMessage message = new SendMessage(chatId, "Бот подключен");
                 telegramBot.execute(message);
@@ -74,14 +98,15 @@ public class TelegramBotListener implements UpdatesListener {
                 connection.getSettings().getClients().get(0).setTgId("Admin:" + chatId);
                 threeXConnection.update(3, connection);
 
-                adminChatIds.add(chatId);
+                telegramClients.put(chatId, new TelegramClient(chatId, TelegramClient.TelegramClientRole.ADMIN));
 
                 SendMessage message = new SendMessage(chatId, "Бот подключен");
                 telegramBot.execute(message);
                 return;
             }
 
-            if (!adminChatIds.contains(chatId)) {
+            if (!telegramClients.containsKey(chatId)
+                    || telegramClients.get(chatId).getRole() != TelegramClient.TelegramClientRole.ADMIN) {
                 SendMessage message = new SendMessage(chatId, "Недостаточно прав!");
                 telegramBot.execute(message);
 
@@ -106,6 +131,9 @@ public class TelegramBotListener implements UpdatesListener {
         boolean hasInCache = buttons.containsKey(callbackText.split(" ")[0]);
         if (hasInCache) {
             buttons.get(callbackText.split(" ")[0]).action(update);
+        } else {
+            SendMessage sendMessage = new SendMessage(update.callbackQuery().data(), String.format("Callback \"%s\" не найден", callbackText));
+            telegramBot.execute(sendMessage);
         }
 
         AnswerCallbackQuery answer = new AnswerCallbackQuery(callbackQuery.id());
@@ -186,6 +214,13 @@ public class TelegramBotListener implements UpdatesListener {
                             try {
                                 log.debug("\tSign field {} => {}", thisClassFieldsByType.get(field.getType().getTypeName()), field.getName());
                                 field.set(button, thisClassFieldsByType.get(field.getType().getTypeName()));
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else if (getClass().getTypeName().equals(field.getType().getTypeName())) {
+                            try {
+                                log.debug("\tSign field {} => {}", this, field.getName());
+                                field.set(button, this);
                             } catch (IllegalAccessException e) {
                                 throw new RuntimeException(e);
                             }

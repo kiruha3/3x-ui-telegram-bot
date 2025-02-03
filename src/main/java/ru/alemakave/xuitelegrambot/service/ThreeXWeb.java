@@ -1,6 +1,7 @@
 package ru.alemakave.xuitelegrambot.service;
 
 import org.springframework.http.HttpMethod;
+import ru.alemakave.xuitelegrambot.model.Certificate;
 
 /**
  * Подробности API доступны по <a href="https://github.com/MHSanaei/3x-ui?tab=readme-ov-file#api-routes">ссылке</a>
@@ -35,4 +36,22 @@ public interface ThreeXWeb {
      * </p>
      */
     void resetAllTraffics();
+
+    /**
+     * <p>
+     *     <b><i>Метов</i></b>: {@link HttpMethod#POST}
+     * </p>
+     * <p>
+     *     <b><i>Путь</i></b>: {@code /server/getNewX25519Cert}
+     * </p>
+     * <p>
+     *     <b><i>Описание</i></b>: Этот эндпоинт генерирует новый сертификат с публичным и приватным ключом
+     * </p>
+     *
+     * @return сертификат с публичным и приватным ключом
+     */
+    Certificate getNewCertificate();
+
+    // TODO: Добавить документацию
+    void importBackup();
 }

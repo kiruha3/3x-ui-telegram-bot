@@ -1,5 +1,5 @@
 package ru.alemakave.xuitelegrambot.model.messages;
 
-import ru.alemakave.xuitelegrambot.dto.ConnectionGetUpdateDTO;
+import ru.alemakave.xuitelegrambot.dto.ConnectionDTO;
 
-public class ConnectionMessage extends Message<ConnectionGetUpdateDTO> { }
+public class ConnectionMessage extends Message<ConnectionDTO> { }
