@@ -15,10 +15,9 @@ public class Application {
 			System.setProperty("threex.connection.proxy.port", "-1");
 		}
 
-		log.info("Running 3x-ui Telegram Bot v" + BuildInfo.BUILD_VERSION);
-
 		SpringApplication application = new SpringApplication(Application.class);
 		application.setWebApplicationType(WebApplicationType.NONE);
 		application.run(args);
+		log.info("Started 3x-ui Telegram Bot v" + BuildInfo.BUILD_VERSION);
 	}
 }
