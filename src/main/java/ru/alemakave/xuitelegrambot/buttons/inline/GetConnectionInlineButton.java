@@ -57,7 +57,7 @@ public class GetConnectionInlineButton extends TGInlineButton {
 
                     GenerateClientConnectionQRInlineButton generateClientConnectionQR = new GenerateClientConnectionQRInlineButton(telegramBot);
                     generateClientConnectionQR.addCallbackArgs(connection.getId(), client.getId());
-                    generateClientConnectionQR.setButtonText("Сгенерировать QR код для клиента " + (i + 1));
+                    generateClientConnectionQR.setButtonText("Сгенерировать QR код для клиента " + (i + 1)+""+clients.get(i).getEmail());
 
                     keyboardMarkup.addRow(generateClientConnectionQR.getButton());
                 }
@@ -67,9 +67,9 @@ public class GetConnectionInlineButton extends TGInlineButton {
             addClientButton.addCallbackArg(connection.getId());
             keyboardMarkup.addRow(addClientButton.getButton());
 
-            DeleteConnectionInlineButton deleteButton = new DeleteConnectionInlineButton(telegramBot);
-            deleteButton.addCallbackArg(connection.getId());
-            keyboardMarkup.addRow(deleteButton.getButton());
+//            DeleteConnectionInlineButton deleteButton = new DeleteConnectionInlineButton(telegramBot);
+//            deleteButton.addCallbackArg(connection.getId());
+//            keyboardMarkup.addRow(deleteButton.getButton());
 
             ListConnectionsInlineButton backButton = new ListConnectionsInlineButton(telegramBot);
             backButton.setButtonText("Назад");
@@ -111,55 +111,55 @@ public class GetConnectionInlineButton extends TGInlineButton {
         msg.append("\nPort: ").append(connection.getPort());
         msg.append("\nProtocol: ").append(connection.getProtocol());
         msg.append("\nSettings: ");
-        if (connection.getSettings() != null) {
-            msg.append("\n|    Clients: ");
-            List<Client> clients = connection.getSettings().getClients();
-            for (int i = 0; i < clients.size(); i++) {
-                Client client = clients.get(i);
-                msg.append("\n|    |    ").append(i + 1).append(": ");
-                msg.append("\n|    |    |    Id: ").append(client.getId());
-                msg.append("\n|    |    |    Flow: ").append(client.getFlow());
-                msg.append("\n|    |    |    Email: ").append(client.getEmail());
-                msg.append("\n|    |    |    Limit Ip: ").append(client.getLimitIp());
-                msg.append("\n|    |    |    Total GB: ").append(client.getTotalGB());
-                msg.append("\n|    |    |    Expiry Time: ").append(client.getExpiryTime());
-                msg.append("\n|    |    |    Enabled: ").append(client.isEnable());
-                msg.append("\n|    |    |    Telegram Id: ").append(client.getTgId());
-                msg.append("\n|    |    |    Sub Id: ").append(client.getSubId());
-                msg.append("\n|    |    |    Reset: ").append(client.getReset());
-            }
-            msg.append("\n|    Decryption: ").append(connection.getSettings().getDecryption());
-            msg.append("\n|    Fallbacks: ").append(connection.getSettings().getFallbacks());
-        }
-        msg.append("\nStream Settings: ");
-        ConnectionStreamSettings streamSettings = connection.getStreamSettings();
-        if (streamSettings != null) {
-            msg.append("\n|    Network: ").append(streamSettings.getNetwork());
-            msg.append("\n|    Security: ").append(streamSettings.getSecurity());
-            msg.append("\n|    External Proxy: ").append(streamSettings.getExternalProxy());
-            msg.append("\n|    Reality Settings: ");
-            RealitySettings realitySettings = streamSettings.getRealitySettings();
-            msg.append("\n|    |    Show: ").append(realitySettings.isShow());
-            msg.append("\n|    |    Xver: ").append(realitySettings.getXver());
-            msg.append("\n|    |    Dest: ").append(realitySettings.getDest());
-            msg.append("\n|    |    Server Names: ").append(realitySettings.getServerNames());
-            msg.append("\n|    |    Private Key: ").append(realitySettings.getPrivateKey());
-            msg.append("\n|    |    Min Client: ").append(realitySettings.getMinClient());
-            msg.append("\n|    |    Max Client: ").append(realitySettings.getMaxClient());
-            msg.append("\n|    |    Max Timediff: ").append(realitySettings.getMaxTimediff());
-            msg.append("\n|    |    Short Ids: ").append(realitySettings.getShortIds());
-            msg.append("\n|    |    Settings: ");
-            RealityConnectionSettings realityConnectionSettings = realitySettings.getSettings();
-            msg.append("\n|    |    |    Public Key: ").append(realityConnectionSettings.getPublicKey());
-            msg.append("\n|    |    |    Fingerprint: ").append(realityConnectionSettings.getFingerprint());
-            msg.append("\n|    |    |    Server Name: ").append(realityConnectionSettings.getServerName());
-            msg.append("\n|    |    |    SpiderX: ").append(realityConnectionSettings.getSpiderX());
-            msg.append("\n|    Tcp Settings: ");
-            TcpSettings tcpSettings = streamSettings.getTcpSettings();
-            msg.append("\n|    |    |    Accept Proxy Protocol: ").append(tcpSettings.isAcceptProxyProtocol());
-            msg.append("\n|    |    |    Header: ");
-            msg.append("\n|    |    |    |    Type: ").append(tcpSettings.getHeader().getType());
-        }
+//        if (connection.getSettings() != null) {
+//            msg.append("\n|    Clients: ");
+//            List<Client> clients = connection.getSettings().getClients();
+//            for (int i = 0; i < clients.size(); i++) {
+//                Client client = clients.get(i);
+//                msg.append("\n|    |    ").append(i + 1).append(": ");
+//                msg.append("\n|    |    |    Id: ").append(client.getId());
+//                msg.append("\n|    |    |    Flow: ").append(client.getFlow());
+//                msg.append("\n|    |    |    Email: ").append(client.getEmail());
+//                msg.append("\n|    |    |    Limit Ip: ").append(client.getLimitIp());
+//                msg.append("\n|    |    |    Total GB: ").append(client.getTotalGB());
+//                msg.append("\n|    |    |    Expiry Time: ").append(client.getExpiryTime());
+//                msg.append("\n|    |    |    Enabled: ").append(client.isEnable());
+//                msg.append("\n|    |    |    Telegram Id: ").append(client.getTgId());
+//                msg.append("\n|    |    |    Sub Id: ").append(client.getSubId());
+//                msg.append("\n|    |    |    Reset: ").append(client.getReset());
+//            }
+//            msg.append("\n|    Decryption: ").append(connection.getSettings().getDecryption());
+//            msg.append("\n|    Fallbacks: ").append(connection.getSettings().getFallbacks());
+//        }
+//        msg.append("\nStream Settings: ");
+//        ConnectionStreamSettings streamSettings = connection.getStreamSettings();
+//        if (streamSettings != null) {
+//            msg.append("\n|    Network: ").append(streamSettings.getNetwork());
+//            msg.append("\n|    Security: ").append(streamSettings.getSecurity());
+//            msg.append("\n|    External Proxy: ").append(streamSettings.getExternalProxy());
+//            msg.append("\n|    Reality Settings: ");
+//            RealitySettings realitySettings = streamSettings.getRealitySettings();
+//            msg.append("\n|    |    Show: ").append(realitySettings.isShow());
+//            msg.append("\n|    |    Xver: ").append(realitySettings.getXver());
+//            msg.append("\n|    |    Dest: ").append(realitySettings.getDest());
+//            msg.append("\n|    |    Server Names: ").append(realitySettings.getServerNames());
+//            msg.append("\n|    |    Private Key: ").append(realitySettings.getPrivateKey());
+//            msg.append("\n|    |    Min Client: ").append(realitySettings.getMinClient());
+//            msg.append("\n|    |    Max Client: ").append(realitySettings.getMaxClient());
+//            msg.append("\n|    |    Max Timediff: ").append(realitySettings.getMaxTimediff());
+//            msg.append("\n|    |    Short Ids: ").append(realitySettings.getShortIds());
+//            msg.append("\n|    |    Settings: ");
+//            RealityConnectionSettings realityConnectionSettings = realitySettings.getSettings();
+//            msg.append("\n|    |    |    Public Key: ").append(realityConnectionSettings.getPublicKey());
+//            msg.append("\n|    |    |    Fingerprint: ").append(realityConnectionSettings.getFingerprint());
+//            msg.append("\n|    |    |    Server Name: ").append(realityConnectionSettings.getServerName());
+//            msg.append("\n|    |    |    SpiderX: ").append(realityConnectionSettings.getSpiderX());
+//            msg.append("\n|    Tcp Settings: ");
+//            TcpSettings tcpSettings = streamSettings.getTcpSettings();
+//            msg.append("\n|    |    |    Accept Proxy Protocol: ").append(tcpSettings.isAcceptProxyProtocol());
+//            msg.append("\n|    |    |    Header: ");
+//            msg.append("\n|    |    |    |    Type: ").append(tcpSettings.getHeader().getType());
+//        }
         msg.append("\nTag: ").append(connection.getTag());
         msg.append("\nSniffing: ").append(connection.getSniffing());
         msg.append("\nAllocate: ").append(connection.getAllocate());
