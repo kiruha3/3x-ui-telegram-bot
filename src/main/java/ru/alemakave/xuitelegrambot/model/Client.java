@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 public class Client {
     private String id;
-    private Object flow;
+    private Flow flow;
     private String email;
     private int limitIp;
     private int totalGB;
@@ -18,4 +18,5 @@ public class Client {
     private String tgId;
     private String subId;
     private byte reset;
+    private String comment;
 }
