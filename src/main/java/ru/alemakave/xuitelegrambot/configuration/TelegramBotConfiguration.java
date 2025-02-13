@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
-@PropertySource(value = {"file:./application.propertes", "file:./application.yml"}, ignoreResourceNotFound = true)
+@PropertySource(value = {"file:./application.yml"}, ignoreResourceNotFound = true)
 public class TelegramBotConfiguration {
     @Value("${telegram.bot.token:}")
     private String token;

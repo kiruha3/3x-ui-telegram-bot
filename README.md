@@ -1,6 +1,7 @@
 ## Запуск
-1. Скачать последнюю [релизную версию](https://github.com/Alemakave/3x-ui-telegram-bot/releases) `3x-ut-telegram-bot.jar`<br>
-2. Создать конфигурационный файл `application.yml` и заполнить<br>
+<ol>
+  <li>Скачать последнюю <a href="https://github.com/Alemakave/3x-ui-telegram-bot/releases">релизную версию</a> <code>3x-ut-telegram-bot.jar</code></li>
+  <li>Создать конфигурационный файл <code>application.yml</code> и заполнить</li>
 
   ```yaml 
 threex:
@@ -10,7 +11,20 @@ threex:
       path: bibBoBbibO
       username: admin
       password: admin
-    # Прокси необходим, если бот запускается из RU региона
+      # Для использования самоподписанных сертификатов необходимо указать путь к 
+      #   файлу публичного сертификата или использовать хранилище ключей.
+      #   Если будут заполнены оба варианта, будет использоваться только хранилище ключей
+      ssl:
+        # Для использования публичного файла сертификата
+        key:
+          public:
+            path: путь_к_публичному_файлу_сертификата
+        # Для использования хранилища ключей
+        truststore:
+          path: путь_к_хранилищу_файлов_сертификатов
+          password: пароль_от_хранилища_сертификатов
+    # Прокси необходим, если бот запускается из RU региона. 
+    #   Если запускается из другого региона, необходимо удалить
     connection:
       proxy:
         address: 127.0.0.1
@@ -20,11 +34,40 @@ telegram:
       token: 0000000000:AABBRRc_xyzabcdEfgHigklmNOPqrstu13
   ```
 
-3. Запустить бота через командную строку:<br>
-   `java -jar 3x-ut-telegram-bot.jar`
+  <ul>
+    <li>
+      Для создания хранилища ключей и импорта используйте команды ниже
+      <details>
+        <summary>Windows</summary>
+        <code>curl -O https://raw.githubusercontent.com/Alemakave/3x-ui-telegram-bot/refs/heads/master/scripts/ImportCert.cmd</code><br>
+        <code>.\ImportCert.cmd путь_к_файлу_сертификата пароль_к_хранилищу_сертификатов</code>
+      </details>
+      <details>
+        <summary>Linux (bash)</summary>
+        <code>curl -O https://raw.githubusercontent.com/Alemakave/3x-ui-telegram-bot/refs/heads/master/scripts/ImportCert.sh</code><br>
+        <code>chmod +x ./ImportCert.sh</code><br>
+        <code>./ImportCert.sh путь_к_файлу_сертификата пароль_к_хранилищу_сертификатов</code>
+      </details>
+    </li>
+    <li>
+      Если при запуске выпадает исключение <code>javax.net.ssl.SSLHandshakeException: No subject alternative names present</code> необходимо пересоздать сертификат к панели и переподключить к телеграм боту
+      <details>
+        <summary>Создание сертификата на сервере:</summary>
+        1. Запустите:<br>
+        <code>bash <(curl -Ls https://raw.githubusercontent.com/Alemakave/3x-ui-telegram-bot/refs/heads/master/scripts/CreateCert.sh)</code><br>
+        2. Перезагрузите панель 3x-ui
+      </details>
+    </li>
+  </ul>
+  <li>
+    Запустить бота через командную строку:<br>
+    <code>java -jar 3x-ut-telegram-bot.jar</code>
+  </li>
+</ol>
 
-## TODO реализации API
+## TODO
 
+### Реализация API
 <details>
   <summary>Нажмите для получения информации о маршрутах API и статусе реализации</summary>
 
