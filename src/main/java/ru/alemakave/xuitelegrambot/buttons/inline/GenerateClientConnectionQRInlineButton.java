@@ -15,6 +15,7 @@ import ru.alemakave.qr.generator.QRGenerator;
 import ru.alemakave.xuitelegrambot.annotations.TGInlineButtonAnnotation;
 import ru.alemakave.xuitelegrambot.model.Client;
 import ru.alemakave.xuitelegrambot.model.Connection;
+import ru.alemakave.xuitelegrambot.model.Flow;
 import ru.alemakave.xuitelegrambot.service.ThreeXConnection;
 import ru.alemakave.xuitelegrambot.utils.ImageUtils;
 
@@ -72,6 +73,7 @@ public class GenerateClientConnectionQRInlineButton extends TGInlineButton {
                 "&sni=" + connection.getStreamSettings().getRealitySettings().getDest().split(":")[0] +
                 "&sid=" + connection.getStreamSettings().getRealitySettings().getShortIds().get(0) +
                 "&spx=" + URLEncoder.encode("/", StandardCharsets.UTF_8) +
+                (client.getFlow() == Flow.NONE ? "" : "&flow=" + client.getFlow().toString()) +
                 "#" + URLEncoder.encode(connection.getRemark(), StandardCharsets.UTF_8) +
                 "-" + client.getEmail();
 

@@ -13,6 +13,7 @@ import ru.alemakave.xuitelegrambot.exception.UnauthorizedException;
 import ru.alemakave.xuitelegrambot.functions.UnauthorizedThrowingFunction;
 import ru.alemakave.xuitelegrambot.mapper.ClientMapper;
 import ru.alemakave.xuitelegrambot.model.Client;
+import ru.alemakave.xuitelegrambot.model.Flow;
 import ru.alemakave.xuitelegrambot.model.messages.AddClientMessage;
 
 import java.util.List;
@@ -57,7 +58,7 @@ public class ThreeXClientImpl implements ThreeXClient {
 
         Client newClient = new Client();
         newClient.setId(UUID.randomUUID().toString());
-        newClient.setFlow("");
+        newClient.setFlow(Flow.defaultValue());
         newClient.setEmail(newClient.getId().split("-")[0]);
         newClient.setEnable(true);
         newClient.setTgId("");

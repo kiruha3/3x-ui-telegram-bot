@@ -1,12 +1,15 @@
 package ru.alemakave.xuitelegrambot.service;
 
+import io.netty.handler.codec.http.HttpScheme;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
 import ru.alemakave.xuitelegrambot.client.CookedWebClient;
 import ru.alemakave.xuitelegrambot.configuration.WebClientConfiguration;
 import ru.alemakave.xuitelegrambot.exception.InvalidCountryException;
@@ -18,8 +21,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static ru.alemakave.xuitelegrambot.utils.WebUtils.connectProxyToWebClientBuilder;
-
 @Slf4j
 @Service
 public class ThreeXAuthImpl implements ThreeXAuth {
@@ -29,6 +30,8 @@ public class ThreeXAuthImpl implements ThreeXAuth {
     private WebClientConfiguration webClientConfiguration;
     @Autowired
     private BodyInserters.FormInserter<String> authBody;
+    @Autowired
+    private HttpClient httpClient;
 
     @Override
     public void login() {
@@ -46,6 +49,14 @@ public class ThreeXAuthImpl implements ThreeXAuth {
         if (response == null) {
             log.error("Connection failed!");
             return;
+        }
+
+        if (response.getStatusCode().is3xxRedirection()) {
+            if (!webClient.isHttps()) {
+                webClient.setScheme(HttpScheme.HTTPS);
+                login();
+                return;
+            }
         }
 
         HttpHeaders headers = response.getHeaders();
@@ -75,8 +86,9 @@ public class ThreeXAuthImpl implements ThreeXAuth {
 
     @Override
     public boolean isAuthorized() {
-        WebClient.Builder webClientBuilder = WebClient.builder();
-        connectProxyToWebClientBuilder(webClientBuilder, webClientConfiguration.getProxyAddress(), webClientConfiguration.getProxyPort());
+        WebClient.Builder webClientBuilder = WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient));
+
         if (WebUtils.isInvalidCountry(webClientBuilder)) {
             throw new InvalidCountryException();
         }

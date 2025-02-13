@@ -1,21 +1,23 @@
 package ru.alemakave.xuitelegrambot.configuration;
 
+import io.netty.handler.codec.http.HttpScheme;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
 import ru.alemakave.xuitelegrambot.client.CookedWebClient;
-import ru.alemakave.xuitelegrambot.exception.InvalidCountryException;
 import ru.alemakave.xuitelegrambot.exception.UnsetException;
 
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SINGLETON;
-import static ru.alemakave.xuitelegrambot.utils.WebUtils.isInvalidCountry;
-import static ru.alemakave.xuitelegrambot.utils.WebUtils.connectProxyToWebClientBuilder;
+import static ru.alemakave.xuitelegrambot.utils.WebUtils.*;
 
 @Configuration
+@PropertySource(value = {"file:./application.yml"}, ignoreResourceNotFound = true)
 public class WebClientConfiguration {
     @Getter
     @Value("${threex.panel.ip}")
@@ -50,23 +52,18 @@ public class WebClientConfiguration {
             throw new UnsetException("Unset or invalid panel path!");
         }
 
-        WebClient.Builder webClientBuilder = WebClient.builder();
-        connectProxyToWebClientBuilder(webClientBuilder, proxyAddress, proxyPort);
-        if (isInvalidCountry(webClientBuilder)) {
-            throw new InvalidCountryException("Invalid country! Use proxy to change country from RU region!");
-        }
-
-        String baseUrl = String.format("http://%s:%s/%s", panelIP, panelPort, panelPath);
-        webClientBuilder = WebClient.builder().baseUrl(baseUrl);
-
-        connectProxyToWebClientBuilder(webClientBuilder, proxyAddress, proxyPort);
-
-        return new CookedWebClient(webClientBuilder.build());
+        return new CookedWebClient(WebClient.builder(), HttpScheme.HTTP, panelIP, panelPort, panelPath);
     }
 
     @Scope(SCOPE_SINGLETON)
     @Bean
     public BodyInserters.FormInserter<String> authBody() {
         return BodyInserters.fromFormData("username", panelUsername).with("password", panelPassword);
+    }
+
+    @Scope(SCOPE_SINGLETON)
+    @Bean
+    public HttpClient httpClient() {
+        return connectProxyToHttpClient(HttpClient.create(), proxyAddress, proxyPort);
     }
 }
