@@ -11,10 +11,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Slf4j
 public class Application {
 	public static void main(String[] args) {
-		if (System.getenv("threex.connection.proxy.port") != null && System.getenv("threex.connection.proxy.port").isEmpty()) {
-			System.setProperty("threex.connection.proxy.port", "-1");
-		}
-
 		SpringApplication application = new SpringApplication(Application.class);
 		application.setWebApplicationType(WebApplicationType.NONE);
 		application.run(args);
