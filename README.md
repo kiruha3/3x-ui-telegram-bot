@@ -6,6 +6,7 @@
   ```yaml 
 threex:
     panel:
+      scheme: http # Тип подключения к серверу (опционально) [http (по умолчанию) | https]
       ip: 10.10.10.10
       port: 5678
       path: bibBoBbibO
