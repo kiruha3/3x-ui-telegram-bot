@@ -1,6 +1,5 @@
 package ru.alemakave.xuitelegrambot.buttons.inline;
 
-import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.message.MaybeInaccessibleMessage;
@@ -8,14 +7,18 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import ru.alemakave.xuitelegrambot.annotations.TGInlineButtonAnnotation;
+import ru.alemakave.xuitelegrambot.client.ClientedTelegramBot;
+import ru.alemakave.xuitelegrambot.client.TelegramClient;
 import ru.alemakave.xuitelegrambot.model.messages.DeleteConnectionMessage;
 import ru.alemakave.xuitelegrambot.service.ThreeXConnection;
+
+import static ru.alemakave.xuitelegrambot.client.TelegramClient.TelegramClientRole.ADMIN;
 
 @TGInlineButtonAnnotation
 public class DeleteConnectionConfirmInlineButton extends TGInlineButton {
     public ThreeXConnection threeXConnection;
 
-    public DeleteConnectionConfirmInlineButton(TelegramBot telegramBot) {
+    public DeleteConnectionConfirmInlineButton(ClientedTelegramBot telegramBot) {
         super(telegramBot, "Да. Удалить.", "/delete_connection_confirm");
     }
 
@@ -48,5 +51,10 @@ public class DeleteConnectionConfirmInlineButton extends TGInlineButton {
             SendMessage sendMessage = new SendMessage(chatId, "Не удалось преобразовать ID подключения в число!");
             telegramBot.execute(sendMessage);
         }
+    }
+
+    @Override
+    public TelegramClient.TelegramClientRole getAccessLevel() {
+        return ADMIN;
     }
 }

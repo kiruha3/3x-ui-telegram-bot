@@ -1,6 +1,5 @@
 package ru.alemakave.xuitelegrambot.buttons.inline;
 
-import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.message.MaybeInaccessibleMessage;
@@ -9,10 +8,14 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import ru.alemakave.xuitelegrambot.annotations.TGInlineButtonAnnotation;
+import ru.alemakave.xuitelegrambot.client.ClientedTelegramBot;
+import ru.alemakave.xuitelegrambot.client.TelegramClient;
 import ru.alemakave.xuitelegrambot.model.Connection;
 import ru.alemakave.xuitelegrambot.service.ThreeXConnection;
 
 import java.util.Random;
+
+import static ru.alemakave.xuitelegrambot.client.TelegramClient.TelegramClientRole.ADMIN;
 
 @TGInlineButtonAnnotation
 public class DeleteConnectionInlineButton extends TGInlineButton {
@@ -21,7 +24,7 @@ public class DeleteConnectionInlineButton extends TGInlineButton {
     // Допустимое значение от 1 до Integer.MAX_VALUE
     public static final int DELETE_CONNECTION_BUTTONS_COUNT = 4;
 
-    public DeleteConnectionInlineButton(TelegramBot telegramBot) {
+    public DeleteConnectionInlineButton(ClientedTelegramBot telegramBot) {
         super(telegramBot, "Удалить подключение", "/delete_connection");
     }
 
@@ -71,5 +74,10 @@ public class DeleteConnectionInlineButton extends TGInlineButton {
             SendMessage sendMessage = new SendMessage(chatId, "Не удалось преобразовать ID подключения в число!");
             telegramBot.execute(sendMessage);
         }
+    }
+
+    @Override
+    public TelegramClient.TelegramClientRole getAccessLevel() {
+        return ADMIN;
     }
 }
