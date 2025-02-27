@@ -25,7 +25,7 @@ public class WebUtils {
                 })
                 .block();
 
-        return myIp == null || myIp.getCc().equals("RU");
+        return myIp == null || myIp.getCc().equals("EU");
     }
 
     public static void connectProxyToWebClientBuilder(WebClient.Builder webClientBuilder, String proxyAddress, int proxyPort) {
